@@ -291,7 +291,6 @@ void Statistic() {
 	cout << "Всего игр - " << player.TotalGames << endl;
 	cout << "Среднее количество очков за игру - " << player.AverageScore << endl;
 	cout << "Максимальное количество очков за игру - " << player.MaxScore << endl;
-
 	cout << "Введите любое число чтобы вернуться в меню" << endl;
 	char t;
 	cin >> t;
@@ -304,16 +303,21 @@ void Setting() {
 	cout << "Введите 1 чтобы поменять громкость звука" << endl;
 	cout << "Введите 2 чтобы выключить или включить звук" << endl;
 	cout << "Введите 3 чтобы вернуться в меню" << endl;
+	settings.out();
 	int t;
 	cin >> t;
 	switch (t)
 	{
 	case 1:
 		settings.ChouseMusicVolum();
+		Setting();
 		break;
 	case 2:
 		settings.ChouseMusicOffOn();
+		Setting();
 		break;
+	case 3:
+		menu();
 	default:
 		Setting();
 		break;
@@ -356,11 +360,12 @@ void menu() {
 			else if (setting.TapCheck(mousecoord) == true)
 			{
 				window.close();
-				cout << "Будет доступно в следующих версия" << endl;
+				/*cout << "Будет доступно в следующих версия" << endl;
 				cout << "Введите любую строку, чтобы вернуться назад" << endl;
 				string str;
 				cin >> str;
-				menu();
+				menu();*/
+				Setting();
 			}
 			else if (stat.TapCheck(mousecoord) == true)
 			{

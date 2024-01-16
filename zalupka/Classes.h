@@ -235,7 +235,20 @@ public:
 	bool music_on_off = true;
 
 	void ChouseMusicVolum() {
+		system("cls");
 		sound_volume = (rand() % 100) + 1;
+	}
+
+	void out() {
+		if (music_on_off == true)
+		{
+			cout << "Звук - включен" << endl;
+		}
+		else
+		{
+			cout << "Звук - выключен" << endl;
+		}
+		cout << "Громкость звука " << sound_volume << endl;
 	}
 
 	void ChouseMusicOffOn() {
