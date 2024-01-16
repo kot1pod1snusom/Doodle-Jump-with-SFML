@@ -397,6 +397,7 @@ int main() {
 	//menu();
 	
 	menu();
+	cout << "Git test" << endl;
 
 	return 0;
 }
