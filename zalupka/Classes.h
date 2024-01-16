@@ -14,7 +14,6 @@ public:
 	int xend = x + 100;
 	int yend = y + 100;
 
-
 	//Расстояние, которое должен преодолеть Doodle в x;
 	int Distance = 350;
 	int Distance_count = 0;
@@ -28,18 +27,29 @@ public:
 
 	sf::RectangleShape Doodle;
 
+
 	Dodle() {
 		Doodle = sf::RectangleShape(sf::Vector2f(100, 100));
 		//Спавн Дудла
 		Doodle.setPosition(x, y);
 
-		string left = "Pics\\dudl_left.png";
+		string left = "Pics\\game\\dudl_left.png";
 		DoodleLeftTexture.loadFromFile(left);
 
-		string right = "Pics\\dudl_right.png";
+		string right = "Pics\\game\\dudl_right.png";
 		DoodleRightTexture.loadFromFile(right);
 		Doodle.setTexture(&DoodleRightTexture);
 
+
+	}
+	
+	void NewGame() {
+		x = 200;
+		y = 700;
+		xend = x + 100;
+		yend = y + 100;
+		move_up_down = false;
+		Distance_count = 0;
 
 	}
 
@@ -93,30 +103,29 @@ public:
 
 	
 	sf::RectangleShape Blok;
-	sf::Texture t;
 
 
 	Block(int x, int y) : x(x), y(y), x_end(x + 150), y_end(y + 10) {
-		Blok = sf::RectangleShape((sf::Vector2f(150.f, 10.f)));
-
-		string str = "Pics\\platform.png";
+		Blok = sf::RectangleShape((sf::Vector2f(100.f, 15.f)));
+			
+		sf::Texture t;
+		string str1 = (filesystem::current_path() / "Pics\\platform.png").string();
+		string str = "Pics\\game\\platform.png";
 		t.loadFromFile(str);
 		Blok.setTexture(&t);
-			
-		Blok.setFillColor(sf::Color::Green);
+		
 
 		Blok.setPosition(x, y);
 	}
 
 
-
-	void Kollizon(Dodle& doodle) {
+	bool Kollizon(Dodle& doodle) {
 
 		bool kollizion_up_check = false;
 
 		if (((doodle.x > x && doodle.x < x_end) || (doodle.xend > x && doodle.x < x_end)) && (doodle.yend == y) && kollizion_up == false)
 		{
-			doodle.move_up_down = true;
+			return true;
 			kollizion_up_check = false;
 		}
 		else if (((doodle.x > x && doodle.x < x_end) || (doodle.xend > x && doodle.x < x_end)) && (doodle.y <= y && doodle.yend >= y))
@@ -132,7 +141,7 @@ public:
 		{
 			kollizion_up = false;
 		}
-
+		return false;
 	}
 
 	//Двигаем платформу вверх
@@ -216,4 +225,36 @@ public:
 	int TotalGames = 0;
 	int AverageScore = 0;
 	int ScoreSum = 0;
+};
+
+class Settings {
+public:
+	float sound_volume = 0;
+
+	//true - on, false - off
+	bool music_on_off = true;
+
+	void ChouseMusicVolum() {
+		sound_volume = (rand() % 100) + 1;
+	}
+
+	void ChouseMusicOffOn() {
+		system("cls");
+		cout << "Введите 1 чтобы выключить звук" << endl;
+		cout << "Введите 2 чтобы включить звук" << endl;
+		int t;
+		cin >> t;
+		switch (t)
+		{
+		case 1:
+			music_on_off = false;
+			break;
+		case 2:
+			music_on_off = true;
+			break;
+		default:
+			ChouseMusicOffOn();
+			break;
+		}
+	}
 };

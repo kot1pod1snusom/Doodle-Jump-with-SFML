@@ -26,10 +26,21 @@
     <ClInclude Include="Classes.h">
       <Filter>Файлы ресурсов</Filter>
     </ClInclude>
+    <ClInclude Include="HelpClasses.h">
+      <Filter>Файлы ресурсов</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Pics\dudl.png">
       <Filter>Файлы ресурсов</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="Sound\jump.mp3">
+      <Filter>Файлы ресурсов</Filter>
+    </Media>
+    <Media Include="Sound\play.mp3">
+      <Filter>Файлы ресурсов</Filter>
+    </Media>
   </ItemGroup>
 </Project>

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "SFML/Audio.hpp"
 #include <SFML/Graphics.hpp>  
 #include <iostream>
 #include <vector>
@@ -11,6 +12,7 @@
 #include <string.h>
 #include <chrono>
 #include <mutex>
+#include <filesystem>
 #include <thread>
 #include <map>
 
