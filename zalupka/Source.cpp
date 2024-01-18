@@ -1,18 +1,15 @@
 ﻿
 
-#include "HelpClasses.h" 
+#include "GameLogick.h"
+
+
 Player player;
 Dodle doodle;
 Settings settings;
-
+GameLogick GameLog;
 
 void menu();
 void StartGame();
-
-
-
-
-
 
 void SetBlockStartPosition(vector<Block>& vec) {
 		for (size_t i = 0; i < 10; i++)
@@ -170,6 +167,7 @@ void otladka(sf::RenderWindow* w, vector<Block> vec) {
 			DataOut(vec, doodle, ShowDoodleCoord, ShowDistanseCount, ShowBlockCoord);
 		}
 	}
+	abort;
 	system("cls");
 	terminate;
 	return void(0);
@@ -209,7 +207,7 @@ void game() {
 	score.setFillColor(sf::Color::Red);
 	
 
-	thread th(otladka, &window,vec);
+	thread th(&otladka, &window,vec);
 	th.detach();
 
 	while (window.isOpen())
@@ -220,14 +218,14 @@ void game() {
 		doodle.Player_Move();
 		
 		//Движение дудла вверх ввниз
-		doodle.Auto_Move(vec);
+		GameLog.Doodle_Auto_Move(doodle, vec);
 		
 		
 
 		//Коллизия
 		for (size_t i = 0; i < vec.size(); i++)
 		{
-			if (vec[i].Kollizon(doodle) == true)
+			if (GameLog.kollizion(vec[i], doodle) == true)
 			{
 				
 				doodle.move_up_down = true;
@@ -262,15 +260,11 @@ void game() {
 		window.display();
 
 
-
 		//Проверка слил игрок или нет
-		if (doodle.yend >= 1000)
+		if (doodle.yend >= 1080)
 		{
 			window.close();
 		}
-
-		auto t = chrono::nanoseconds(800);
-		std::this_thread::sleep_for(t);
 	}
 	TerminateThread(th.native_handle(), 0);
 	GameOver();
@@ -360,11 +354,6 @@ void menu() {
 			else if (setting.TapCheck(mousecoord) == true)
 			{
 				window.close();
-				/*cout << "Будет доступно в следующих версия" << endl;
-				cout << "Введите любую строку, чтобы вернуться назад" << endl;
-				string str;
-				cin >> str;
-				menu();*/
 				Setting();
 			}
 			else if (stat.TapCheck(mousecoord) == true)
@@ -402,7 +391,6 @@ int main() {
 	//menu();
 	
 	menu();
-	cout << "Git test" << endl;
 
 	return 0;
 }

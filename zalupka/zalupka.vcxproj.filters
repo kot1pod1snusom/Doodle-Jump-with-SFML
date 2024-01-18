@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Файлы ресурсов\Blocks">
+      <UniqueIdentifier>{01f1e538-2659-4e30-af76-10c08bebf48e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы ресурсов\Classes">
+      <UniqueIdentifier>{35a0e2b8-d36e-41fa-8f51-0c0f907e4d28}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source.cpp">
@@ -20,20 +26,21 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Includes.h">
-      <Filter>Файлы ресурсов</Filter>
+    <ClInclude Include="Blocks.h">
+      <Filter>Файлы ресурсов\Blocks</Filter>
     </ClInclude>
     <ClInclude Include="Classes.h">
-      <Filter>Файлы ресурсов</Filter>
+      <Filter>Файлы ресурсов\Classes</Filter>
     </ClInclude>
     <ClInclude Include="HelpClasses.h">
+      <Filter>Файлы ресурсов\Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="Includes.h">
+      <Filter>Файлы ресурсов\Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="GameLogick.h">
       <Filter>Файлы ресурсов</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="Pics\dudl.png">
-      <Filter>Файлы ресурсов</Filter>
-    </Image>
   </ItemGroup>
   <ItemGroup>
     <Media Include="Sound\jump.mp3">
@@ -42,5 +49,10 @@
     <Media Include="Sound\play.mp3">
       <Filter>Файлы ресурсов</Filter>
     </Media>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Pics\dudl.png">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
   </ItemGroup>
 </Project>

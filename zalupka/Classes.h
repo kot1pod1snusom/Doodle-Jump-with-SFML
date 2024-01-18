@@ -1,5 +1,5 @@
 #pragma once
-#include "Includes.h"
+#include "Blocks.h"
 
 
 class Block;
@@ -30,8 +30,6 @@ public:
 
 	Dodle() {
 		Doodle = sf::RectangleShape(sf::Vector2f(100, 100));
-		//Спавн Дудла
-		Doodle.setPosition(x, y);
 
 		string left = "Pics\\game\\dudl_left.png";
 		DoodleLeftTexture.loadFromFile(left);
@@ -50,7 +48,7 @@ public:
 		yend = y + 100;
 		move_up_down = false;
 		Distance_count = 0;
-
+		Score = 0;
 	}
 
 	//Движение 
@@ -82,9 +80,9 @@ public:
 		xend = x + 100;
 		
 	}
-
-	void Auto_Move(vector<Block>& vec);
 };
+
+
 
 
 
@@ -93,74 +91,49 @@ public:
 	//Координаты верхнего левого угла
 	int x;
 	int y;
-	
+
 	//Координаты нижнего правого угла 
 	int x_end;
 	int y_end;
 
-	
+
 	bool kollizion_up = false;
 
-	
+
 	sf::RectangleShape Blok;
 
 
 	Block(int x, int y) : x(x), y(y), x_end(x + 150), y_end(y + 10) {
 		Blok = sf::RectangleShape((sf::Vector2f(100.f, 15.f)));
-			
+
 		sf::Texture t;
 		string str1 = (filesystem::current_path() / "Pics\\platform.png").string();
 		string str = "Pics\\game\\platform.png";
 		t.loadFromFile(str);
+		Blok.setFillColor(sf::Color::Green);
 		Blok.setTexture(&t);
-		
 
 		Blok.setPosition(x, y);
-	}
-
-
-	bool Kollizon(Dodle& doodle) {
-
-		bool kollizion_up_check = false;
-
-		if (((doodle.x > x && doodle.x < x_end) || (doodle.xend > x && doodle.x < x_end)) && (doodle.yend == y) && kollizion_up == false)
-		{
-			return true;
-			kollizion_up_check = false;
-		}
-		else if (((doodle.x > x && doodle.x < x_end) || (doodle.xend > x && doodle.x < x_end)) && (doodle.y <= y && doodle.yend >= y))
-		{
-			kollizion_up_check = true;
-		}
-
-		if (kollizion_up_check == true)
-		{
-			kollizion_up = true;
-		}
-		else
-		{
-			kollizion_up = false;
-		}
-		return false;
 	}
 
 	//Двигаем платформу вверх
 	void Move_down() {
 		y++;
 		y_end++;
-		Blok.setPosition(x, y);
+		Blok.setPosition(x ,y );
 	}
 
 	//Когда блок ушел за грань видимости, спавним его вверху 
 	void Brick_relocate() {
-		if (y >= 1080) 
-		{ 
+		if (y >= 1080)
+		{
 			y = 0 - 10; // Спавним так, чтобы платформы не спавнились на глазах
 			x = (rand() % (1000 - 150)) + 1; //Первое число - количество пикселей окна по х, вычитая xend, чтобы платформа не выходила за текстурки
-			Blok.setPosition(x, y);
 
 			x_end = x + 150;
 			y_end = y + 10;
+
+			Blok.setPosition(x, y);
 		}
 		else
 		{
@@ -170,54 +143,6 @@ public:
 
 };
 
-
-void Dodle::Auto_Move(vector<Block>& vec) {
-	//Проверяем, куда должен двигается дудл 
-	if (move_up_down == false) //Дудл всегда падает с сам, поэтому просто меняет ему координаты до конца, пока он не проиграет или не коснется платформы
-	{
-		y++;
-		yend++;
-		Doodle.setPosition(x, y);
-	}
-	else if (move_up_down == true)
-	{
-		//Сравниваем, пролетел ли дудл нужную вверх дистанцуя
-		if (Distance_count != Distance)
-		{
-			//Проверяем где находится дудл, чтоб двигаеть или самомого дудла, или платформы
-			if (y >= 500) //Двигаем дудла
-			{
-				y--;
-				yend--;
-				Doodle.setPosition(x, y);
-
-				//Добавляем +! в проеденную дистанцуя
-				Distance_count++;
-			}
-			else //Двигаем платформы
-			{
-				for (size_t i = 0; i < vec.size(); i++)
-				{
-					vec[i].Move_down();
-				}
-
-				//Добвляем +1 в проеденную дистанцуя
-				Distance_count++;
-
-				//т.к. это самая высокая и новая точка, то тут даем +очки
-				Score += 5;
-			}
-		}
-		else //Дудл прошел всю дистанцию
-		{
-			//Меняем ключ движения на движение вниз
-			move_up_down = false;
-
-			//Обнуляем счетчик проёденной дистанции
-			Distance_count = 0;
-		}
-	}
-}
 
 class Player {
 public:
