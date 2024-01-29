@@ -1,6 +1,5 @@
 #pragma once
-#include "Blocks.h"
-
+#include "HelpClasses.h"
 
 class Block;
 
@@ -37,10 +36,13 @@ public:
 		string right = "Pics\\game\\dudl_right.png";
 		DoodleRightTexture.loadFromFile(right);
 		Doodle.setTexture(&DoodleRightTexture);
-
-
 	}
 	
+	void Move_down() {
+		y++;
+		yend++;
+	}
+
 	void NewGame() {
 		x = 200;
 		y = 700;
@@ -51,18 +53,27 @@ public:
 		Score = 0;
 	}
 
+	void draw(sf::RenderWindow* w) {
+		Doodle.setPosition(x, y);
+		w->draw(Doodle);
+	}
+
+	void Move_up(vector<Block*>& vec);
+
+
 	//Движение 
 	void Player_Move() {
 		if (sf::Keyboard::isKeyPressed(sf::	Keyboard::A))
 		{
 			x--;
+			xend--;
 			//Меняем текстурку дудла на направленного в левую сторону
 			Doodle.setTexture(&DoodleLeftTexture);
 		}
 		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
 		{
 			x++;
-			
+			xend++; 
 			//Меняем текстурку дудла на направленного в правую сторону
 			Doodle.setTexture(&DoodleRightTexture);
 		}
@@ -75,15 +86,8 @@ public:
 		{
 			x = 1000;
 		}
-
-		yend = y + 100;
-		xend = x + 100;
-		
 	}
 };
-
-
-
 
 
 class Block {
@@ -103,35 +107,38 @@ public:
 	sf::RectangleShape Blok;
 
 
-	Block(int x, int y) : x(x), y(y), x_end(x + 150), y_end(y + 10) {
+	Block(int x, int y, sf::Color color) : x(x), y(y), x_end(x + 100), y_end(y + 15) {
 		Blok = sf::RectangleShape((sf::Vector2f(100.f, 15.f)));
 
 		sf::Texture t;
 		string str1 = (filesystem::current_path() / "Pics\\platform.png").string();
 		string str = "Pics\\game\\platform.png";
 		t.loadFromFile(str);
-		Blok.setFillColor(sf::Color::Green);
+		Blok.setFillColor(color);
 		Blok.setTexture(&t);
 
 		Blok.setPosition(x, y);
 	}
 
+
+	virtual int kol_do(Dodle& dl) = 0;
+
 	//Двигаем платформу вверх
-	void Move_down() {
-		y++;
-		y_end++;
-		Blok.setPosition(x ,y );
+	virtual void Move_down() {
+		this->y+=1;
+		this->y_end+=1;
+		Blok.setPosition(x, y);
 	}
 
 	//Когда блок ушел за грань видимости, спавним его вверху 
-	void Brick_relocate() {
+	virtual void Brick_relocate() {
 		if (y >= 1080)
 		{
 			y = 0 - 10; // Спавним так, чтобы платформы не спавнились на глазах
-			x = (rand() % (1000 - 150)) + 1; //Первое число - количество пикселей окна по х, вычитая xend, чтобы платформа не выходила за текстурки
+			x = (rand() % (1000 - 100)) + 1; //Первое число - количество пикселей окна по х, вычитая xend, чтобы платформа не выходила за текстурки
 
-			x_end = x + 150;
-			y_end = y + 10;
+			x_end = x + 100;
+			y_end = y + 15;
 
 			Blok.setPosition(x, y);
 		}
@@ -140,8 +147,42 @@ public:
 			return;
 		}
 	}
-
 };
+
+void Dodle::Move_up(vector<Block*>& vec) {
+	//Сравниваем, пролетел ли дудл нужную вверх дистанцуя
+	if (Distance_count != Distance)
+	{
+		//Проверяем где находится дудл, чтоб двигаеть или самомого дудла, или платформы
+		if (y >= 500) //Двигаем дудла
+		{
+			y--;
+			yend--;
+			Distance_count++;
+		}
+		else //Двигаем платформы
+		{
+			for (size_t i = 0; i < vec.size(); i++)
+			{
+				vec[i]->Move_down();
+			}
+
+			//Добвляем +1 в проеденную дистанцуя
+			Distance_count++;
+
+			//т.к. это самая высокая и новая точка, то тут даем +очки
+			Score += 1;
+		}
+	}
+	else //Дудл прошел всю дистанцию
+	{
+		//Меняем ключ движения на движение вниз
+		move_up_down = false;
+
+		//Обнуляем счетчик проёденной дистанции
+		Distance_count = 0;
+	}
+}
 
 
 class Player {

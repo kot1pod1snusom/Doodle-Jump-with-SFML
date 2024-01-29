@@ -1,5 +1,4 @@
 ﻿
-
 #include "GameLogick.h"
 
 
@@ -11,22 +10,23 @@ GameLogick GameLog;
 void menu();
 void StartGame();
 
-void SetBlockStartPosition(vector<Block>& vec) {
-		for (size_t i = 0; i < 10; i++)
+void SetBlockStartPosition(vector<Block*>& vec) {
+	/*for (size_t i = 0; i < 10; i++)
+	{
+		if (i * 200 >= 1000)
 		{
-			if (i * 200 >= 1000)
-			{
-				vec.push_back(Block(i * 100, rand() & (i * 100)));
-			}
-			else
-			{
-				vec.push_back(Block(i * 100, i * 200));
-			}
+			vec.push_back(&Usual_Block(i * 100, rand() & (i * 100)));
 		}
-		vec.push_back(Block(190, 900));
+		else
+		{
+			vec.push_back(&Usual_Block(i * 100, i * 200));
+		}
+	}
+	vec.push_back(&Usual_Block(190, 900));*/
+		
 }
 
-void DataOut(vector<Block> vec, Dodle dl, bool ShowDoodleCoord, bool ShowDistanseCount, bool ShowBlockCoord) {
+void DataOut(vector<Block*> vec, Dodle dl, bool ShowDoodleCoord, bool ShowDistanseCount, bool ShowBlockCoord) {
 	system("cls");
 	if (ShowDoodleCoord == true)
 	{
@@ -45,7 +45,7 @@ void DataOut(vector<Block> vec, Dodle dl, bool ShowDoodleCoord, bool ShowDistans
 		cout << "Block coord:" << endl;
 		for (size_t i = 0; i < vec.size(); i++)
 		{
-			cout << "\t" << i << " x - " << vec[i].x << " y - " << vec[i].y << " xend - " << vec[i].x_end << " y_end - " << vec[i].y_end << endl;
+			cout << "\t" << i << " x - " << vec[i]->x << " y - " << vec[i]->y << " xend - " << vec[i]->x_end << " y_end - " << vec[i]->y_end << endl;
 		}
 	}
 }
@@ -119,7 +119,7 @@ void GameOver() {
 	exit;
 }
 
-void otladka(sf::RenderWindow* w, vector<Block> vec) {
+void otladka(sf::RenderWindow* w, vector<Block*> vec) {
 	bool ShowDoodleCoord = false;
 	bool ShowDistanseCount = false;
 	bool ShowBlockCoord = false;
@@ -168,7 +168,7 @@ void otladka(sf::RenderWindow* w, vector<Block> vec) {
 		}
 	}
 	abort;
-	system("cls");
+	//system("cls");
 	terminate;
 	return void(0);
 }
@@ -176,7 +176,8 @@ void otladka(sf::RenderWindow* w, vector<Block> vec) {
 
 void game() {
 	//Вектор блоков
-	vector<Block> vec; 
+	vector<Block*> vec; 
+
 	sf::RenderWindow window(sf::VideoMode(1000, 1080), "Doodle jump");
 	sf::RectangleShape fon((sf::Vector2f(1000,1080)));
 
@@ -194,7 +195,21 @@ void game() {
 	fon.setTexture(&t);
 	fon.setPosition(1, 1);
 
-	SetBlockStartPosition(vec);
+	for (size_t i = 0; i < 10; i++)
+	{
+		if (i * 200 >= 1000)
+		{
+			Block* a1 = new Usual_Block(i * 100, rand() % (i * 100));
+			vec.push_back(a1);
+		}
+		else
+		{
+			vec.push_back(new Usual_Block(i * 100, i * 200));
+		}
+	}
+	vec.push_back(new Usual_Block(190, 900));
+
+	//SetBlockStartPosition(vec);
 
 	sf::Font font;
 	font.loadFromFile("arial.ttf");
@@ -207,7 +222,7 @@ void game() {
 	score.setFillColor(sf::Color::Red);
 	
 
-	thread th(&otladka, &window,vec);
+	thread th(&otladka, &window, vec);
 	th.detach();
 
 	while (window.isOpen())
@@ -219,28 +234,20 @@ void game() {
 		
 		//Движение дудла вверх ввниз
 		GameLog.Doodle_Auto_Move(doodle, vec);
-		
-		
+
 
 		//Коллизия
 		for (size_t i = 0; i < vec.size(); i++)
 		{
 			if (GameLog.kollizion(vec[i], doodle) == true)
 			{
-				
-				doodle.move_up_down = true;
-				
-
+				vec[i]->kol_do(doodle);
 				sound_jump.play(settings);
 			}
+			vec[i]->Brick_relocate();
 		}
 	
 
-		//Перемещение блоков если они ушли за границу обзора
-		for (size_t i = 0; i < vec.size(); i++)
-		{
-			vec[i].Brick_relocate();
-		}
 
 
 		//Вывод
@@ -248,11 +255,10 @@ void game() {
 		window.draw(fon);
 		for (size_t i = 0; i < vec.size(); i++)
 		{
-			window.draw(vec[i].Blok);
+			window.draw(vec[i]->Blok);
 		}
 		
-		doodle.Doodle.setPosition(doodle.x, doodle.y);
-		window.draw(doodle.Doodle);
+		doodle.draw(&window);
 
 		score.setString(to_string(doodle.Score));
 		window.draw(score);
@@ -266,7 +272,7 @@ void game() {
 			window.close();
 		}
 	}
-	TerminateThread(th.native_handle(), 0);
+	//TerminateThread(th.native_handle(), 0);
 	GameOver();
 	mc.stop();
 }
